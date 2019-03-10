@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>GooglePlay会对apk重新签名 | Hexo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Android,GooglePlay,apk签名">
+    <meta name="description" content="上传到GooglePlay的Apk会被重新签名最近在准备发布新版本的时候,测试同学发现新版本的apk覆盖老版本的时候安装失败了,通过命令行安装发现问题 1Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package your.package.name signatures do not match the previously installed ver">
+<meta name="keywords" content="Android,GooglePlay,apk签名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GooglePlay会对apk重新签名">
+<meta property="og:url" content="http://yoursite.com/2019/03/10/GooglePlay会对apk重新签名/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="上传到GooglePlay的Apk会被重新签名最近在准备发布新版本的时候,测试同学发现新版本的apk覆盖老版本的时候安装失败了,通过命令行安装发现问题 1Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package your.package.name signatures do not match the previously installed ver">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-10T08:18:09.834Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GooglePlay会对apk重新签名">
+<meta name="twitter:description" content="上传到GooglePlay的Apk会被重新签名最近在准备发布新版本的时候,测试同学发现新版本的apk覆盖老版本的时候安装失败了,通过命令行安装发现问题 1Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package your.package.name signatures do not match the previously installed ver">
+    
+        <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar2.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Jinwei Lei</h5>
+          <a href="mailto:leijingwei@qq.com" title="leijingwei@qq.com" class="mail">leijingwei@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">GooglePlay会对apk重新签名</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">GooglePlay会对apk重新签名</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-03-10T08:17:24.000Z" itemprop="datePublished" class="page-time">
+  2019-03-10
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#上传到GooglePlay的Apk会被重新签名"><span class="post-toc-number">1.</span> <span class="post-toc-text">上传到GooglePlay的Apk会被重新签名</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-GooglePlay会对apk重新签名" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">GooglePlay会对apk重新签名</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-03-10 16:17:24" datetime="2019-03-10T08:17:24.000Z" itemprop="datePublished">2019-03-10</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="上传到GooglePlay的Apk会被重新签名"><a href="#上传到GooglePlay的Apk会被重新签名" class="headerlink" title="上传到GooglePlay的Apk会被重新签名"></a>上传到GooglePlay的Apk会被重新签名</h2><p>最近在准备发布新版本的时候,测试同学发现新版本的apk覆盖老版本的时候安装失败了,通过命令行安装发现问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package your.package.name signatures do not match the previously installed version; ignoring!]</span><br></pre></td></tr></table></figure>
+<p>意思是两个版本的Apk签名不同,新版本的Apk能够确定是用release签名打包的,难道老版本的包是用了debug的签名吗?,经过排查老版本的包也是用的release签名,打包配置也都是同一套配置.</p>
+<p>最后问题指向GooglePlay,应该是上传到GooglePlay后,被重新签名了,我将从googleplay下载的包卸载掉,安装本地的低版本,然后用高版本覆盖安装,果然没有问题,应该就是googleplay重新签名了,最后上传新包到googleplay成功上传,验证了猜想(因为签名如果不一致是不能上传成功的),最后发布更新可以正常更新</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-03-10T08:18:09.834Z" itemprop="dateUpdated">2019-03-10 16:18:09</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar2.jpg" alt="Jinwei Lei">
+            Jinwei Lei
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GooglePlay/">GooglePlay</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/apk签名/">apk签名</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/03/10/Android应用发布到GooglePlay/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Android应用发布到GooglePlay</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Jinwei Lei &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
