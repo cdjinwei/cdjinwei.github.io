@@ -205,12 +205,19 @@
     </div>
 
     
-<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/03/19/CocosCreatorWeb调试模拟IphoneX/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">CocosCreatorWeb调试模拟IphoneX</h4>
+      </a>
+    </div>
   
 
   
     <div class="waves-block waves-effect next">
-      <a href="/2019/03/10/Android应用发布到GooglePlay/" id="post-next" class="post-nav-link">
+      <a href="/2019/03/10/AndroidPublishToGooglePlay/" id="post-next" class="post-nav-link">
         <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
         <h4 class="title">Android应用发布到GooglePlay</h4>
       </a>
@@ -325,10 +332,10 @@ var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
     var OriginTitile = document.title, titleTime;
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
-            document.title = '死鬼去哪里了！';
+            document.title = '二月的尾巴';
             clearTimeout(titleTime);
         } else {
-            document.title = '(つェ⊂)咦!又好了!';
+            document.title = '二月的尾巴';
             titleTime = setTimeout(function() {
                 document.title = OriginTitile;
             },2000);
