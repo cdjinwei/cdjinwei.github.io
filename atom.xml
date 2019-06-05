@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-19T14:50:43.821Z</updated>
+  <updated>2019-06-05T16:12:21.545Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CocosCreator资源加载和释放</title>
+    <link href="http://yoursite.com/2019/05/29/CocosCreator%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E5%92%8C%E9%87%8A%E6%94%BE/"/>
+    <id>http://yoursite.com/2019/05/29/CocosCreator资源加载和释放/</id>
+    <published>2019-05-29T15:37:06.000Z</published>
+    <updated>2019-06-05T16:12:21.545Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="CocosCreator资源加载和释放"><a href="#CocosCreator资源加载和释放" class="headerlink" title="CocosCreator资源加载和释放"></a>CocosCreator资源加载和释放</h2><blockquote><p>CocosCreator的官方文档对资源的加载和释放方面描述的不算清楚, 不少人对游戏内存的把控没有信心,今天我就来捋一捋CocosCreator的资源加载和释放,权当是测试一下各个资源加载和释放的接口</p></blockquote><blockquote><p>本文基于CocosCreator2.1.1</p></blockquote><h3 id="0-CocosCreator的resources目录"><a href="#0-CocosCreator的resources目录" class="headerlink" title="0. CocosCreator的resources目录"></a>0. CocosCreator的resources目录</h3><p>使用过CocosCreator的人应该都知道,resorces目录是用来存放那些需要再游戏中动态加载的资源, 官方稳定建议如果资源不需要动态加载,就不要放在该目录下. 经测试, resources目录下的所有资源在构建工程后生成的setting.js文件中有记录,resources目录下的资源越多也就意味着setting.js越大</p><h3 id="1-CocosCreator的各种类型的资源"><a href="#1-CocosCreator的各种类型的资源" class="headerlink" title="1. CocosCreator的各种类型的资源"></a>1. CocosCreator的各种类型的资源</h3><p>在CocosCreator2.1.1版本中,在空场景的情况下cc.loader._cache中一共有20个对象,下文的资源加载和释放的对比将会刨除这20个对象</p><h5 id="1-cc-Texture2D"><a href="#1-cc-Texture2D" class="headerlink" title="(1) cc.Texture2D"></a>(1) cc.Texture2D</h5><p>这是一个基本的图片资源类型,很多游戏都有这个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//加载一个cc.Texture2D类型的资源</span><br><span class="line">cc.loader.loadRes(&apos;pic&apos;, cc.Texture2D, (err, data) =&gt; &#123;</span><br><span class="line">    if(err) return console.log(err);</span><br><span class="line">    console.log(cc.loader._cache);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p><p>以上代码加载完成之后,_cache中多了一个png资源和一个json资源,其中png资源是图片资源是占用内存的大头, 而json资源则代表着一个cc.Texture2D资源对象.<br>在cache中,cc.Texture2D对象是以json文件的名字作为key保存的,单独释放_cache中的png对象,内存并没有明显下降,图片占用的内存明显没有被释放掉,而单独释放json的结果是png和json都被释放掉了,内存也有明显的下降,所以<strong>加载了那些资源就来,释放时就要完完全全把那些资源释放掉</strong></p><ul><li><p>单独释放png, json文件没有被一起释放,内存也没有明显降低</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.release(&apos;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&apos;);</span><br></pre></td></tr></table></figure></li><li><p>单独释放json, png和json都被释放了,内存有明显下降</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.release(&apos;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&apos;);</span><br></pre></td></tr></table></figure></li></ul><p>那么问题来了,怎样知道加载一个cc.Texture2D时还加载了写什么进来呢?<br>cc.loader.getDependsRecursively()可以获取传入对象的所有依赖资源,参数类型为cc.Asset,cc.RawAsset,或者string</p><blockquote><p><strong>cc.Asset</strong>: 在 Creator 中，所有继承自 cc.Asset 的类型都统称资源，如 cc.Texture2D, cc.SpriteFrame, cc.AnimationClip, cc.Prefab 等。它们的加载是统一并且自动化的，相互依赖的资源能够被自动预加载(2.0版本文档原文)<br><strong>cc.RawAsset</strong>: Creator似乎准备把cc.Asset和cc.RawAsset的标准统一起来,在2.0的文档中没有找到cc.RawAsset的说明,应该已经统一了<br><strong>string</strong>: 这里就是资源的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.loadRes(&apos;image&apos;, cc.Texture2D, (err, data) =&gt; &#123;</span><br><span class="line">    //data 就是一个Texture2D对象</span><br><span class="line">    let deps = cc.loader.getDependsRecursively(data);</span><br><span class="line">    console.log(deps);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//deps的输出, 就是加载image时,所加载的所有资源</span><br><span class="line">[&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&quot;,</span><br><span class="line">&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&quot;]</span><br><span class="line"></span><br><span class="line">//通过资源的路径也能获取到资源的依赖</span><br><span class="line">//获取到的是</span><br><span class="line">//[&apos;8fdd1c3c-1ec9-4018-b57b-551c9b37eba4&apos;]</span><br><span class="line">let deps = cc.loader.getDependsRecursively(&apos;image&apos;);</span><br><span class="line">//这样也能将加载image时所加载的资源全部释放掉</span><br><span class="line">cc.loader.release(deps);</span><br></pre></td></tr></table></figure></p></blockquote><h5 id="1-cc-SpriteFrame"><a href="#1-cc-SpriteFrame" class="headerlink" title="(1) cc.SpriteFrame"></a>(1) cc.SpriteFrame</h5><p>SpriteFrame类似于一个中间件,夹在Texture2D和Sprite之间,当我们以cc.SpriteFrame类型进行资源加载时,我们会得到一个SpriteFrame对象,而通过SpriteFrame对象,我们能够获取到3个依赖资源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.loadRes(&apos;image&apos;, cc.SpriteFrame, (err, data) =&gt; &#123;</span><br><span class="line">    //data 就是一个SpriteFrame对象</span><br><span class="line">    let desp = cc.loader.getDependsRecursively(data);</span><br><span class="line">    console.log(desp);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//desp的输出, 就是加载image时,所加载的所有资源</span><br><span class="line">[&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&quot;,</span><br><span class="line">&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&quot;,</span><br><span class="line">res/import/3e/3e24d7c4-3041-4acd-bc91-378df4a24e5f.json]</span><br></pre></td></tr></table></figure></p><p>前两个资源是我们以cc.Texture2D类型进行加载得到的,第三个资源就代表着我们的SpriteFrame对象,这个SpriteFrame对象在_cache中,就是以这个json文件的名字作为key进行保存的</p><p>在释放以Texture2D类型加载进来的资源时, cc.loader.release(‘image’)能够轻松将加载进来的资源释放掉,而想要释放以SpriteFrame类型加载进来的资源,这么简单的处理将会坑到自己<br>那是因为<strong>从资源路径获取到的依赖资源不包含SpriteFrame</strong>, 如果这样鲁莽释放,加载进来的SpriteFrame就残留在了cache中,当我们再次以SpriteFrame类型加载这个资源时,<strong>由于cache中残留的SpriteFrame对象,loader将不会加载资源,而是直接返回了cache中这个已经丢失了Texture2D的SpriteFrame</strong>,我们此时可以在控制台中看到一大片的webgl的警告</p><h3 id="2-如何优雅地释放资源"><a href="#2-如何优雅地释放资源" class="headerlink" title="2. 如何优雅地释放资源"></a>2. 如何优雅地释放资源</h3><h5 id="资源引用计数"><a href="#资源引用计数" class="headerlink" title="资源引用计数"></a>资源引用计数</h5><p>对于释放动态加载的资源,有些人的做法是在加载时获取到加载资源的完整依赖进行累加计数,在释放时对对应资源减一,引用为0时进行真正的释放</p><h5 id="资源份文件夹管理"><a href="#资源份文件夹管理" class="headerlink" title="资源份文件夹管理"></a>资源份文件夹管理</h5><p>另一种做法是把各个界面和场景自己才会用到的资源分文件夹管理,然后通用资源用另一个文件夹管理,在游戏离开某个界面进入另一个界面时,将除通用资源以外的资源统统释放掉</p><blockquote><p>我个人目前还是跟喜欢后一种做法,一个原因是自己没有一个好的引用计数的实现,另一个原因是经常用到的资源可能会时不时被释放掉,而再次加载有需要一定的时间,会造成不好的体验,就使用了后一种做法</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;CocosCreator资源加载和释放&quot;&gt;&lt;a href=&quot;#CocosCreator资源加载和释放&quot; class=&quot;headerlink&quot; title=&quot;CocosCreator资源加载和释放&quot;&gt;&lt;/a&gt;CocosCreator资源加载和释放&lt;/h2&gt;&lt;bloc
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>CocosCreatorWeb调试模拟IphoneX</title>
@@ -110,9 +131,9 @@
     </summary>
     
     
-      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
-    
       <category term="CocosCreator" scheme="http://yoursite.com/tags/CocosCreator/"/>
+    
+      <category term="Android" scheme="http://yoursite.com/tags/Android/"/>
     
       <category term="Admob" scheme="http://yoursite.com/tags/Admob/"/>
     

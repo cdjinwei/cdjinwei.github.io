@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>CocosCreator资源加载和释放 | Hexo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content>
+    <meta name="description" content="CocosCreator资源加载和释放 CocosCreator的官方文档对资源的加载和释放方面描述的不算清楚, 不少人对游戏内存的把控没有信心,今天我就来捋一捋CocosCreator的资源加载和释放,权当是测试一下各个资源加载和释放的接口   本文基于CocosCreator2.1.1  0. CocosCreator的resources目录使用过CocosCreator的人应该都知道,res">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocosCreator资源加载和释放">
+<meta property="og:url" content="http://yoursite.com/2019/05/29/CocosCreator资源加载和释放/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="CocosCreator资源加载和释放 CocosCreator的官方文档对资源的加载和释放方面描述的不算清楚, 不少人对游戏内存的把控没有信心,今天我就来捋一捋CocosCreator的资源加载和释放,权当是测试一下各个资源加载和释放的接口   本文基于CocosCreator2.1.1  0. CocosCreator的resources目录使用过CocosCreator的人应该都知道,res">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-05T16:12:21.545Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CocosCreator资源加载和释放">
+<meta name="twitter:description" content="CocosCreator资源加载和释放 CocosCreator的官方文档对资源的加载和释放方面描述的不算清楚, 不少人对游戏内存的把控没有信心,今天我就来捋一捋CocosCreator的资源加载和释放,权当是测试一下各个资源加载和释放的接口   本文基于CocosCreator2.1.1  0. CocosCreator的resources目录使用过CocosCreator的人应该都知道,res">
+    
+        <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar2.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">Jinwei Lei</h5>
+          <a href="mailto:leijingwei@qq.com" title="leijingwei@qq.com" class="mail">leijingwei@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/">
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives">
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags">
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">CocosCreator资源加载和释放</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">CocosCreator资源加载和释放</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-05-29T15:37:06.000Z" itemprop="datePublished" class="page-time">
+  2019-05-29
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CocosCreator资源加载和释放"><span class="post-toc-number">1.</span> <span class="post-toc-text">CocosCreator资源加载和释放</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#0-CocosCreator的resources目录"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">0. CocosCreator的resources目录</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-CocosCreator的各种类型的资源"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">1. CocosCreator的各种类型的资源</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-cc-Texture2D"><span class="post-toc-number">1.2.0.1.</span> <span class="post-toc-text">(1) cc.Texture2D</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-cc-SpriteFrame"><span class="post-toc-number">1.2.0.2.</span> <span class="post-toc-text">(1) cc.SpriteFrame</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-如何优雅地释放资源"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">2. 如何优雅地释放资源</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#资源引用计数"><span class="post-toc-number">1.3.0.1.</span> <span class="post-toc-text">资源引用计数</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#资源份文件夹管理"><span class="post-toc-number">1.3.0.2.</span> <span class="post-toc-text">资源份文件夹管理</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="title-CocosCreator资源加载和释放" class="post-article article-type-title fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">CocosCreator资源加载和释放</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-05-29 23:37:06" datetime="2019-05-29T15:37:06.000Z" itemprop="datePublished">2019-05-29</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style="display:none">
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="CocosCreator资源加载和释放"><a href="#CocosCreator资源加载和释放" class="headerlink" title="CocosCreator资源加载和释放"></a>CocosCreator资源加载和释放</h2><blockquote>
+<p>CocosCreator的官方文档对资源的加载和释放方面描述的不算清楚, 不少人对游戏内存的把控没有信心,今天我就来捋一捋CocosCreator的资源加载和释放,权当是测试一下各个资源加载和释放的接口</p>
+</blockquote>
+<blockquote>
+<p>本文基于CocosCreator2.1.1</p>
+</blockquote>
+<h3 id="0-CocosCreator的resources目录"><a href="#0-CocosCreator的resources目录" class="headerlink" title="0. CocosCreator的resources目录"></a>0. CocosCreator的resources目录</h3><p>使用过CocosCreator的人应该都知道,resorces目录是用来存放那些需要再游戏中动态加载的资源, 官方稳定建议如果资源不需要动态加载,就不要放在该目录下. 经测试, resources目录下的所有资源在构建工程后生成的setting.js文件中有记录,resources目录下的资源越多也就意味着setting.js越大</p>
+<h3 id="1-CocosCreator的各种类型的资源"><a href="#1-CocosCreator的各种类型的资源" class="headerlink" title="1. CocosCreator的各种类型的资源"></a>1. CocosCreator的各种类型的资源</h3><p>在CocosCreator2.1.1版本中,在空场景的情况下cc.loader._cache中一共有20个对象,下文的资源加载和释放的对比将会刨除这20个对象</p>
+<h5 id="1-cc-Texture2D"><a href="#1-cc-Texture2D" class="headerlink" title="(1) cc.Texture2D"></a>(1) cc.Texture2D</h5><p>这是一个基本的图片资源类型,很多游戏都有这个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//加载一个cc.Texture2D类型的资源</span><br><span class="line">cc.loader.loadRes(&apos;pic&apos;, cc.Texture2D, (err, data) =&gt; &#123;</span><br><span class="line">    if(err) return console.log(err);</span><br><span class="line">    console.log(cc.loader._cache);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>以上代码加载完成之后,_cache中多了一个png资源和一个json资源,其中png资源是图片资源是占用内存的大头, 而json资源则代表着一个cc.Texture2D资源对象.<br>在cache中,cc.Texture2D对象是以json文件的名字作为key保存的,单独释放_cache中的png对象,内存并没有明显下降,图片占用的内存明显没有被释放掉,而单独释放json的结果是png和json都被释放掉了,内存也有明显的下降,所以<strong>加载了那些资源就来,释放时就要完完全全把那些资源释放掉</strong></p>
+<ul>
+<li><p>单独释放png, json文件没有被一起释放,内存也没有明显降低</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.release(&apos;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&apos;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>单独释放json, png和json都被释放了,内存有明显下降</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.release(&apos;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&apos;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>那么问题来了,怎样知道加载一个cc.Texture2D时还加载了写什么进来呢?<br>cc.loader.getDependsRecursively()可以获取传入对象的所有依赖资源,参数类型为cc.Asset,cc.RawAsset,或者string</p>
+<blockquote>
+<p><strong>cc.Asset</strong>: 在 Creator 中，所有继承自 cc.Asset 的类型都统称资源，如 cc.Texture2D, cc.SpriteFrame, cc.AnimationClip, cc.Prefab 等。它们的加载是统一并且自动化的，相互依赖的资源能够被自动预加载(2.0版本文档原文)<br><strong>cc.RawAsset</strong>: Creator似乎准备把cc.Asset和cc.RawAsset的标准统一起来,在2.0的文档中没有找到cc.RawAsset的说明,应该已经统一了<br><strong>string</strong>: 这里就是资源的路径<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.loadRes(&apos;image&apos;, cc.Texture2D, (err, data) =&gt; &#123;</span><br><span class="line">    //data 就是一个Texture2D对象</span><br><span class="line">    let deps = cc.loader.getDependsRecursively(data);</span><br><span class="line">    console.log(deps);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//deps的输出, 就是加载image时,所加载的所有资源</span><br><span class="line">[&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&quot;,</span><br><span class="line">&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&quot;]</span><br><span class="line"></span><br><span class="line">//通过资源的路径也能获取到资源的依赖</span><br><span class="line">//获取到的是</span><br><span class="line">//[&apos;8fdd1c3c-1ec9-4018-b57b-551c9b37eba4&apos;]</span><br><span class="line">let deps = cc.loader.getDependsRecursively(&apos;image&apos;);</span><br><span class="line">//这样也能将加载image时所加载的资源全部释放掉</span><br><span class="line">cc.loader.release(deps);</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h5 id="1-cc-SpriteFrame"><a href="#1-cc-SpriteFrame" class="headerlink" title="(1) cc.SpriteFrame"></a>(1) cc.SpriteFrame</h5><p>SpriteFrame类似于一个中间件,夹在Texture2D和Sprite之间,当我们以cc.SpriteFrame类型进行资源加载时,我们会得到一个SpriteFrame对象,而通过SpriteFrame对象,我们能够获取到3个依赖资源<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cc.loader.loadRes(&apos;image&apos;, cc.SpriteFrame, (err, data) =&gt; &#123;</span><br><span class="line">    //data 就是一个SpriteFrame对象</span><br><span class="line">    let desp = cc.loader.getDependsRecursively(data);</span><br><span class="line">    console.log(desp);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//desp的输出, 就是加载image时,所加载的所有资源</span><br><span class="line">[&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.png&quot;,</span><br><span class="line">&quot;res/import/8f/8fdd1c3c-1ec9-4018-b57b-551c9b37eba4.json&quot;,</span><br><span class="line">res/import/3e/3e24d7c4-3041-4acd-bc91-378df4a24e5f.json]</span><br></pre></td></tr></table></figure></p>
+<p>前两个资源是我们以cc.Texture2D类型进行加载得到的,第三个资源就代表着我们的SpriteFrame对象,这个SpriteFrame对象在_cache中,就是以这个json文件的名字作为key进行保存的</p>
+<p>在释放以Texture2D类型加载进来的资源时, cc.loader.release(‘image’)能够轻松将加载进来的资源释放掉,而想要释放以SpriteFrame类型加载进来的资源,这么简单的处理将会坑到自己<br>那是因为<strong>从资源路径获取到的依赖资源不包含SpriteFrame</strong>, 如果这样鲁莽释放,加载进来的SpriteFrame就残留在了cache中,当我们再次以SpriteFrame类型加载这个资源时,<strong>由于cache中残留的SpriteFrame对象,loader将不会加载资源,而是直接返回了cache中这个已经丢失了Texture2D的SpriteFrame</strong>,我们此时可以在控制台中看到一大片的webgl的警告</p>
+<h3 id="2-如何优雅地释放资源"><a href="#2-如何优雅地释放资源" class="headerlink" title="2. 如何优雅地释放资源"></a>2. 如何优雅地释放资源</h3><h5 id="资源引用计数"><a href="#资源引用计数" class="headerlink" title="资源引用计数"></a>资源引用计数</h5><p>对于释放动态加载的资源,有些人的做法是在加载时获取到加载资源的完整依赖进行累加计数,在释放时对对应资源减一,引用为0时进行真正的释放</p>
+<h5 id="资源份文件夹管理"><a href="#资源份文件夹管理" class="headerlink" title="资源份文件夹管理"></a>资源份文件夹管理</h5><p>另一种做法是把各个界面和场景自己才会用到的资源分文件夹管理,然后通用资源用另一个文件夹管理,在游戏离开某个界面进入另一个界面时,将除通用资源以外的资源统统释放掉</p>
+<blockquote>
+<p>我个人目前还是跟喜欢后一种做法,一个原因是自己没有一个好的引用计数的实现,另一个原因是经常用到的资源可能会时不时被释放掉,而再次加载有需要一定的时间,会造成不好的体验,就使用了后一种做法</p>
+</blockquote>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-06-05T16:12:21.545Z" itemprop="dateUpdated">2019-06-06 00:12:21</time>
+</span><br>
+
+
+        
+    </div>
+    
+    <footer>
+        <a href="http://yoursite.com">
+            <img src="/img/avatar2.jpg" alt="Jinwei Lei">
+            Jinwei Lei
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/03/19/CocosCreatorWeb调试模拟IphoneX/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">CocosCreatorWeb调试模拟IphoneX</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style="display:none">
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style="display:none">
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>Jinwei Lei &copy; 2015 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '二月的尾巴';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '二月的尾巴';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
